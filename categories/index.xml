@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on whistle</title>
+    <link>https://zhengyueyan.github.io/categories/</link>
+    <description>Recent content in Categories on whistle</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zn-Hans</language>
+    <lastBuildDate>Sun, 12 May 2019 14:43:19 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhengyueyan.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>java</title>
+      <link>https://zhengyueyan.github.io/categories/java/</link>
+      <pubDate>Sun, 12 May 2019 14:43:19 +0800</pubDate>
+      
+      <guid>https://zhengyueyan.github.io/categories/java/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

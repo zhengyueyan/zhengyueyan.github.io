@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>java on whistle</title>
+    <link>https://zhengyueyan.github.io/categories/java/</link>
+    <description>Recent content in java on whistle</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zn-Hans</language>
+    <lastBuildDate>Sun, 12 May 2019 14:43:19 +0800</lastBuildDate>
+    
+	<atom:link href="https://zhengyueyan.github.io/categories/java/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>自定义实现锁遇到的问题</title>
+      <link>https://zhengyueyan.github.io/blog/2019-05/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%9E%E7%8E%B0%E9%94%81%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Sun, 12 May 2019 14:43:19 +0800</pubDate>
+      
+      <guid>https://zhengyueyan.github.io/blog/2019-05/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%9E%E7%8E%B0%E9%94%81%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
+      <description>课程内容自定义实现锁，实现时遇到线程阻塞问题的分析&amp;hellip;&amp;hellip;</description>
+    </item>
+    
+  </channel>
+</rss>
