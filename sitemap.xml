@@ -4,50 +4,61 @@
   
   <url>
     <loc>https://zhengyueyan.github.io/blog/</loc>
-    <lastmod>2019-05-12T14:43:19+08:00</lastmod>
+    <lastmod>2019-06-02T14:43:19+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://zhengyueyan.github.io/categories/</loc>
-    <lastmod>2019-05-12T14:43:19+08:00</lastmod>
+    <lastmod>2019-06-02T14:43:19+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://zhengyueyan.github.io/series/</loc>
-    <lastmod>2019-05-12T14:43:19+08:00</lastmod>
+    <lastmod>2019-06-02T14:43:19+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://zhengyueyan.github.io/tags/</loc>
-    <lastmod>2019-05-12T14:43:19+08:00</lastmod>
+    <lastmod>2019-06-02T14:43:19+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://zhengyueyan.github.io/categories/java/</loc>
-    <lastmod>2019-05-12T14:43:19+08:00</lastmod>
+    <lastmod>2019-06-02T14:43:19+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://zhengyueyan.github.io/tags/java/</loc>
-    <lastmod>2019-05-12T14:43:19+08:00</lastmod>
+    <lastmod>2019-06-02T14:43:19+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://zhengyueyan.github.io/series/java%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/</loc>
-    <lastmod>2019-05-12T14:43:19+08:00</lastmod>
+    <lastmod>2019-06-02T14:43:19+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhengyueyan.github.io/tags/netty/</loc>
+    <lastmod>2019-06-02T14:43:19+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://zhengyueyan.github.io/</loc>
-    <lastmod>2019-05-12T14:43:19+08:00</lastmod>
+    <lastmod>2019-06-02T14:43:19+08:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://zhengyueyan.github.io/blog/2019-06/%E5%88%9D%E8%AF%86netty%E6%A1%86%E6%9E%B6/</loc>
+    <lastmod>2019-06-02T14:43:19+08:00</lastmod>
   </url>
   
   <url>
@@ -70,17 +81,6 @@
     <loc>https://zhengyueyan.github.io/about/</loc>
     <lastmod>2019-05-11T12:03:13+08:00</lastmod>
     <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://zhengyueyan.github.io/moment/</loc>
-    <lastmod>2019-05-11T12:03:13+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://zhengyueyan.github.io/moment/null/</loc>
-    <lastmod>2019-05-11T12:03:13+08:00</lastmod>
   </url>
   
 </urlset>

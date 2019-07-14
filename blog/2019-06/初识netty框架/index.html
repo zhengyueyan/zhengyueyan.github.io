@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zn-Hans">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1" />
+  <meta name="author" content="whistle">
+  <meta name="description" content="Netty是一个高性能框架，那Netty是如何实现高性能的？&hellip;&hellip;">
+  
+  <meta property="og:title" content="初识netty框架" />
+<meta property="og:description" content="Netty是一个高性能框架，那Netty是如何实现高性能的？&hellip;&hellip;" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://zhengyueyan.github.io/blog/2019-06/%E5%88%9D%E8%AF%86netty%E6%A1%86%E6%9E%B6/" />
+<meta property="article:published_time" content="2019-06-02T14:43:19&#43;08:00"/>
+<meta property="article:modified_time" content="2019-06-02T14:43:19&#43;08:00"/><meta property="og:see_also" content="https://zhengyueyan.github.io/blog/2019-05/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%9E%E7%8E%B0%E9%94%81%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" />
+
+
+
+  <title>
+  
+       初识netty框架 | whistle 
+  
+  </title>
+
+  <link rel="canonical" href="https://zhengyueyan.github.io/blog/2019-06/%E5%88%9D%E8%AF%86netty%E6%A1%86%E6%9E%B6/">
+
+  
+  
+
+  
+  <link href="https://zhengyueyan.github.io/css/vendors-extensions/fontawesome/all.min.css" rel="stylesheet">
+
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:300,400,500,600">
+  <link href="https://zhengyueyan.github.io/css/font.css" rel="stylesheet"> 
+    
+  
+  <link href="https://zhengyueyan.github.io/css/vendors/bootstrap4/bootstrap.min.css" rel="stylesheet">
+  <link href="https://zhengyueyan.github.io/css/vendors-extensions/mdb/mdb.min.css" rel="stylesheet"> 
+  <link href="https://zhengyueyan.github.io/css/vendors/mdb/style.min.css" rel="stylesheet"> 
+  <link href="https://zhengyueyan.github.io/css/main.css" rel="stylesheet">
+
+
+  
+  <link rel="shortcut icon"
+  
+      href="https://zhengyueyan.github.io/img/zheng.png"
+  
+  >
+
+
+  
+  
+
+  <style type="text/css">
+      @media (min-width: 800px) and (max-width: 850px) {
+              .navbar:not(.top-nav-collapse) {
+                  background: #1C2331!important;
+              }
+          }
+  </style>
+
+
+  
+    
+    <link rel="stylesheet" href="https://zhengyueyan.github.io/js/vendors/katex/katex.min.css">
+  
+  
+
+  
+    
+    <link rel="stylesheet" href="https://zhengyueyan.github.io/css/vendors/highlight/github-gist.css">
+  
+
+</head>
+
+  <body class="bg-light" data-spy="scroll" data-target="#page-scrollspy" data-offset="90">
+  
+    
+    
+
+    
+      
+
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="https://zhengyueyan.github.io/">
+          
+        <img class="avatar" src="https://zhengyueyan.github.io/img/zheng.png" style="width: 40px!important;height: auto;"  class="d-inline-block align-top" alt="" >
+        
+        <strong> whistle</strong>
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        
+        <ul class="navbar-nav mr-auto ">
+          <li class="nav-item ">
+            <a class="nav-link" href="https://zhengyueyan.github.io/">Home</a>
+          </li>
+             
+            <li class="nav-item ">
+              <a class="nav-link" href="https://zhengyueyan.github.io/blog/" >Blog  </a>
+            </li>
+          
+             
+            <li class="nav-item ">
+              <a class="nav-link" href="https://zhengyueyan.github.io/moment/" >Moment  </a>
+            </li>
+          
+             
+            <li class="nav-item ">
+              <a class="nav-link" href="https://zhengyueyan.github.io/about/" >About  </a>
+            </li>
+          
+          
+        </ul>
+
+      </div>
+
+    </div>
+  </nav>
+  
+ 
+      
+ 
+
+
+
+
+
+
+<div id="site-header" class="carousel slide carousel-fade" data-ride="carousel" style="height: 18rem;" >  
+
+  
+  
+  
+
+  
+  <div class="carousel-inner" role="listbox">
+    
+      
+
+        
+        <div class="carousel-item active">
+          <div class="view" style="background-image: url('https://zhengyueyan.github.io/img/header-slides/raw_1515691746.jpg'); background-repeat: no-repeat; background-size: cover;">
+
+            
+            <div class="mask rgba-black-light d-flex justify-content-center align-items-center">
+
+              
+              
+              
+
+            </div>
+            
+
+          </div>
+        </div>
+        
+      
+    
+      
+
+        
+        <div class="carousel-item">
+          <div class="view" style="background-image: url('https://zhengyueyan.github.io/img/header-slides//raw_1515847341.jpg'); background-repeat: no-repeat; background-size: cover;">
+
+            
+            <div class="mask rgba-black-light d-flex justify-content-center align-items-center">
+
+            
+
+            </div>
+            
+
+          </div>
+        </div>
+        
+      
+    
+
+  
+  </div>
+  
+
+  
+  <div class="carousel-content text-center white-text wow fadeIn">
+    <div class="row mx-0 headfont mt-3 pt-4">
+      
+      <div class="col-12 col-sm-5 align-middle">
+        <a href="https://zhengyueyan.github.io/">
+          
+            <img class="pull-right avatar avatar-md" src="https://zhengyueyan.github.io/img/profile.jpg" alt="" >
+          
+        </a>
+      </div>
+      
+      <div class="col-12 col-sm-7 text-left pl-2">
+        <a href="https://zhengyueyan.github.io/">
+          <h1 class="mb-2 h1" style="font-weight: 300;" >
+            <strong>whistle</strong>
+          </h1>
+        </a>
+        
+
+             
+        <div class="mt-2" style="font-size: 1rem; color: white;">
+            
+              <a href="https://github.com/zhengyueyan" target="_blank" rel="noopener"><i class="fab fa-github pr-1" aria-hidden="true"></i></a>    
+            
+            
+
+            
+
+            
+
+            
+
+            
+    
+            
+    
+        
+            
+                <a href="mailto:zhengyueyan.zyy@foxmail.com"><i class="far fa-envelope-open pr-1" aria-hidden="true"></i></a>
+            
+    
+            
+
+            
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  
+  
+  
+
+</div>
+  
+    
+
+    
+  
+  <main class="post-main-wrapper">
+    
+    
+    <div class="row">
+
+      
+
+      
+      <div class="col-md-10">
+      
+
+        
+        <div class="z-depth-1  post-wrapper white-bg single-post">
+
+          <div class="post-header text-center" >
+  <ul class="post-meta li-x">
+    
+      
+        <li><a href="https://zhengyueyan.github.io/categories/java"><i class="fas fa-folder-open pr-1" aria-hidden="true"></i> java </a></li>
+      
+    
+    
+      
+        <li><a href="https://zhengyueyan.github.io/series/java%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0"><i class="fas fa-bookmark pr-1" aria-hidden="true"></i>java学习日记</a></li>
+      
+    
+  </ul>
+
+  <div class="px-4 post-heading">初识netty框架</div>
+
+  <ul class="post-meta li-x mt-1">
+    
+      <li>Jun 2, 2019</li>
+    
+
+    
+      <li class="middot"></li>
+      <li>5 minutes read</li>
+    
+  </ul>
+  
+
+</div>
+
+
+          <div class="post-content markdown">
+            <ul>
+<li><p>Netty是一个高性能框架，那Netty是如何实现高性能的？</p>
+
+<ol>
+<li><p>使用更加优雅的Reactor模式实现、灵活的线程模型、利用EventLoop等机制，可以非常高效地管理成百上千的Channel。</p></li>
+
+<li><p>充分利用了Java的Zero-Copy机制，降低内存分配和回收的开销。例：使用池化的Direct Buff等技术，在提高IO性能同时，减少对象的创建和销毁；利用反射等技术直接操纵SelectionKey，使用数组而不是Java容器等。</p></li>
+
+<li><p>使用更多本地代码。例：直接利用JNI调用OpenSSL等方式，获得比Java内建SSL引擎更好的性能。</p></li>
+
+<li><p>在通信协议、序列化等其他角度的优化。</p></li>
+</ol></li>
+</ul>
+
+<hr />
+
+<ul>
+<li>了解Reactor模式</li>
+</ul>
+
+<p>Reactor模式是Doug Lea大佬的设计。基本的设计图如下：
+<img src="https://zhengyueyan.github.io/img/netty/img1.png" alt="设计图" /></p>
+
+<pre><code>class Reactor implements Runnable {
+    final Selector selector;
+    final ServerSocketChannel serverSocket;
+
+    Reactor(int port) throws IOException {
+        selector = Selector.open();
+        serverSocket = ServerSocketChannel.open();
+        serverSocket.socket().bind(new InetSocketAddress(port));
+        serverSocket.configureBlocking(false);
+        SelectionKey sk =serverSocket.register(selector,SelectionKey.OP_ACCEPT);
+        sk.attach(new Acceptor());
+    }
+
+    // class Reactor continued
+    public void run() { // normally in a newThread
+        try {
+           while (!Thread.interrupted()) {
+               selector.select();
+               Set selected = selector.selectedKeys();
+               Iterator it = selected.iterator();
+               while (it.hasNext())
+                   dispatch((SelectionKey)(it.next());
+               selected.clear();
+           }
+        } catch (IOException ex) { /* ... */ }
+    }   
+
+    void dispatch(SelectionKey k) {
+        Runnable r = (Runnable)(k.attachment());
+        if (r != null)
+            r.run();
+    }  
+}
+</code></pre>
+
+<p>单线程版本，Reactor 只负责请求的接受，和nio变成一样初始化注册的是OP_ACCEPT，然后绑定一个Acceptor（实现Runnable接口），主循环中，收到准备好的selectedKeys，并且遍历selectedKeys，将每一个keydispatch下去，在dispatch里边通过selectedKey得到绑定的Acceptor。<br />
+Acceptor的逻辑：</p>
+
+<pre><code>// class Reactor continued Reactor内部类
+class Acceptor implements Runnable { // inner
+    public void run() {
+        try {
+            SocketChannel c = serverSocket.accept();
+            if (c != null)
+                new Handler(selector, c);
+            }catch(IOException ex) { /* ... */ }
+        }
+    }
+}
+
+final class Handler implements Runnable {
+    final SocketChannel socket;
+    final SelectionKey sk;
+    ByteBuffer input = ByteBuffer.allocate(MAXIN);
+    ByteBuffer output = ByteBuffer.allocate(MAXOUT);
+    static final int READING = 0, SENDING = 1;
+    int state = READING;
+    Handler(Selector sel, SocketChannel c) throws IOException {
+        socket = c;
+        c.configureBlocking(false);
+        // Optionally try first read now
+        sk = socket.register(sel, 0);
+        sk.attach(this);
+        sk.interestOps(SelectionKey.OP_READ);
+        sel.wakeup();//注册OP_READ兴趣之后，让select()方法返回，接受要读取的数据
+    }
+    boolean inputIsComplete() { /* ... */ }
+    boolean outputIsComplete() { /* ... */ }
+    void process() { /* ... */ }
+
+    // class Handler continued
+    public void run() {
+        try {
+            if (state == READING) read();
+            else if (state == SENDING) send();
+        } catch (IOException ex) { /* ... */ }
+    }
+
+    void read() throws IOException {
+        socket.read(input);
+        if (inputIsComplete()) {
+            process();
+            state = SENDING;
+            // Normally also do first write now
+            sk.interestOps(SelectionKey.OP_WRITE);//将状态变为SENDING之后，接下来就是往外写数据，对写感兴趣。
+        }
+    }
+
+    void send() throws IOException {
+        socket.write(output);
+        if (outputIsComplete()) sk.cancel();
+    }
+}
+</code></pre>
+
+<p>Acceptor 获得SocketChannel接着进入到实际的处理类Handler里边，Handler有SocketChannel 和SelectionKey的引用，Handler的构造器将当前类（Handler）加入到绑定里边，并且对READ感兴趣，之后调sel.wakeup()意思是让select( )方法立刻返回，如果当前没有select()方法阻塞的话，那么下一次调用select()会立即返回，然后执行run()方法，是通过判断状态的方式来决定是写还是读 ，这个在Netty3中就是需要这样实现handler代码的，需要自己判断状态来决定业务逻辑。Netty4已经改成各种回调了，比如channelRead，channelActive等。
+文档接着介绍了 基于模式的设计，提前绑定合适的handler作为attachment：</p>
+
+<pre><code>//A simple use of GoF State-Object pattern
+//Rebind appropriate handler as attachment
+class Handler { // ...
+    public void run() { // initial state is reader
+        socket.read(input);
+        if (inputIsComplete()) {
+            process();
+        sk.attach(new Sender());//绑定UI个发送者。
+        sk.interest(SelectionKey.OP_WRITE);//由于发送者是写操作，因此兴趣是OP_WRITE
+        sk.selector().wakeup();//让select方法立刻返回，执行写的逻辑。
+    }
+}
+class Sender implements Runnable {
+    public void run(){ // ...
+        socket.write(output);
+        if (outputIsComplete()) sk.cancel();
+    }
+}
+</code></pre>
+
+<p>接着是handler基于线程池的实现：
+<img src="https://zhengyueyan.github.io/img/netty/img2.png" alt="设计图" /><br />
+多个selector的Reactor：
+<img src="https://zhengyueyan.github.io/img/netty/img3.png" alt="设计图" /><br />
+mainReactor相当于bossGroup,subReactorx 相当于netty里边的workerGroup.整个过程下来其实就是netty的 框架内在的模式。   .</p>
+
+<hr />
+
+<ul>
+<li><p>Zero-Copy机制 零拷贝机制<br />
+Netty实现了自己的ByteBuf，与jdk中ByteBuffer相比，使用更加简便。具有以下优点:</p>
+
+<ul>
+<li>允许用户自定义缓冲区类型扩展</li>
+<li>通过内置的复合缓冲区类型实现透明的零拷贝</li>
+<li>容量可按需增长</li>
+<li>读写这两种模式之间不需要调用类似于JDK的ByteBuffer的flip()方法进行切换</li>
+<li>读和写使用不同的索引</li>
+<li>支持方法的链式调用</li>
+<li>支持引用计数</li>
+<li>支持池化
+<br /></li>
+</ul>
+
+<p>维护两个不同的索引: 读索引(readerIndex)和写索引(writerIndex)</p>
+
+<ul>
+<li>ByteBuf维护了readerIndex和writerIndex索引</li>
+<li>当readerIndex &gt; writerIndex时，则抛出IndexOutOfBoundsException</li>
+<li>ByteBuf容量 = writerIndex。</li>
+<li>ByteBuf可读容量 = writerIndex - readerIndex</li>
+<li>readXXX()和writeXXX()方法将会推进其对应的索引。自动推进</li>
+<li>getXXX()和setXXX()方法将对writerIndex和readerIndex无影响
+<br /></li>
+</ul></li>
+</ul>
+
+<p>ByteBuf8种具体实现，默认使用的是PooledUnsafeDirectByteBuf
+<img src="https://zhengyueyan.github.io/img/netty/img4.png" alt="设计图" />
+零拷贝的体现：</p>
+
+<ol>
+<li>Netty 提供了 CompositeByteBuf 类, 它可以将多个 ByteBuf 合并为一个逻辑上的 ByteBuf, 避免了各个 ByteBuf 之间的拷贝.</li>
+<li>通过 wrap 操作, 我们可以将 byte[] 数组、ByteBuf、ByteBuffer等包装成一个 Netty ByteBuf 对象, 进而避免了拷贝操作.</li>
+<li>ByteBuf 支持 slice 操作, 因此可以将 ByteBuf 分解为多个共享同一个存储区域的 ByteBuf, 避免了内存的拷贝.</li>
+<li>通过 FileRegion 包装的FileChannel.tranferTo 实现文件传输, 可以直接将文件缓冲区的数据发送到目标 Channel, 避免了传统通过循环 write 方式导致的内存拷贝问题<br /></li>
+</ol>
+
+<hr />
+
+<p>其他方面，Netty官方网站给出如下图：  Netty官方实现了一些通信协议http、websocket、FTP、SMTP等。提供完整的SSL/TLS和StartTLS支持。<br />
+<img src="https://zhengyueyan.github.io/img/netty/img5.png" alt="设计图" /></p>
+
+          </div>
+
+          
+          <div class="row">
+            <div class="col-md-8">
+            
+              <div class="mb-5">
+                
+<div class="li-x div-x post-meta">
+  <li class="pr-0"><a href="https://zhengyueyan.github.io/tags/"><i class="fas fa-tags"></i></a></li>
+  <div class="tags-sm">
+    
+      <li><a href="https://zhengyueyan.github.io/tags/netty" role="button">netty </a></li>
+      
+    
+      <li><a href="https://zhengyueyan.github.io/tags/java" role="button">java </a></li>
+      
+    
+  </div>
+</div>
+              </div>
+            
+            </div>
+            
+          </div>
+          
+
+          
+          <div class="row pt-3">
+            <div class="col-md-6">
+              
+                <a href=https://zhengyueyan.github.io/blog/2019-05/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%9E%E7%8E%B0%E9%94%81%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/ class="post-meta">Previous
+                  <div class="pt-2 pb-5 d-flex">
+                    <i class="fas fa-angle-left text-grey font-weight-bold mr-2 active-color"></i>
+                    <span>自定义实现锁遇到的问题</span>
+                  </div>
+                </a>
+              
+            </div>
+            
+            <div class="col-md-6 text-right" >
+              
+            </div>
+          </div>
+
+          
+
+        </div>
+        
+
+      </div>
+      
+
+      
+	
+	
+	
+	
+
+    </div>
+    
+
+
+  </main>
+  
+
+
+    
+    
+
+<footer class="page-footer text-center font-small mt-4 wow fadeIn">
+
+
+  
+  <div class="pb-2 mt-5 pt-5">
+    
+      <a href="https://github.com/zhengyueyan " target="_blank" rel="noopener"><i class="fab fa-github mr-3" aria-hidden="true"></i></a>    
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    
+        <a href="mailto:zhengyueyan.zyy@foxmail.com"><i class="far fa-envelope-open mr-3" aria-hidden="true"></i></a>
+    
+
+    
+
+    
+
+  </div>
+  
+
+  
+  <div class="copyright py-4">
+    
+    <span>  2016 - 2019 &copy; | Theme <a href='https://github.com/orianna-zzo/AllinOne' target="_blank">AllinOne</a> by <a href='https://github.com/orianna-zzo' target="_blank">Orianna</a>  </span>
+  </div>
+  
+
+</footer>
+
+
+    
+
+
+
+
+
+
+<script type="text/javascript" src="https://zhengyueyan.github.io/js/vendors/jquery/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="https://zhengyueyan.github.io/js/vendors/jquery/jquery.smooth-scroll.min.js"></script>
+
+
+
+<script type="text/javascript" src="https://zhengyueyan.github.io/js/vendors/popper.min.js"></script>
+<script type="text/javascript" src="https://zhengyueyan.github.io/js/vendors/holder.min.js"></script>
+<script type="text/javascript" src="https://zhengyueyan.github.io/js/vendors-extensions/bootstrap4/bootstrap.js" ></script>
+
+<script type="text/javascript" src="https://zhengyueyan.github.io/js/vendors/mdb/mdb.min.js"></script>
+
+<script type="text/javascript" src="https://zhengyueyan.github.io/js/main.js"></script>
+
+
+
+  
+  <script src="https://zhengyueyan.github.io/js/vendors/highlight.pack.js"> </script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+ 
+  <script src="https://zhengyueyan.github.io/js/vendors/katex/katex.min.js"> </script>
+  <script src="https://zhengyueyan.github.io/js/vendors/katex/contrib/auto-render.min.js"></script>
+
+  <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          renderMathInElement(document.body);
+      });
+  </script>
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+  
+  new WOW().init();
+</script>
+
+
+
+
+  </body>
+</html>
